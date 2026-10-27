@@ -1,0 +1,146 @@
+/* ============================================
+   AI Blog Generator - Global Styles
+   ============================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   Base Layer - Global defaults
+   ============================================ */
+@layer base {
+  /* Smooth scrolling across the entire page */
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Custom scrollbar for dark theme */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #0f172a;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+
+  /* Text selection color */
+  ::selection {
+    background: rgba(99, 102, 241, 0.3);
+    color: #e0e7ff;
+  }
+}
+
+/* ============================================
+   Component Layer - Reusable styled classes
+   ============================================ */
+@layer components {
+  /* Glassmorphism card */
+  .glass-card {
+    @apply bg-surface-800/50 backdrop-blur-xl border border-surface-700/50 
+           rounded-2xl shadow-xl shadow-black/20;
+  }
+
+  /* Primary gradient background */
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #06b6d4 100%);
+  }
+
+  /* Text gradient */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, #818cf8 0%, #a78bfa 40%, #06b6d4 100%);
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply px-6 py-3 bg-gradient-to-r from-primary-600 to-primary-500 
+           text-white font-semibold rounded-xl
+           hover:from-primary-500 hover:to-primary-400
+           active:from-primary-700 active:to-primary-600
+           transition-all duration-200 ease-out
+           shadow-lg shadow-primary-500/25 hover:shadow-primary-500/40
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-primary-500/25
+           focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:ring-offset-2 focus:ring-offset-surface-900;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply px-6 py-3 bg-surface-700/50 border border-surface-600 
+           text-surface-200 font-semibold rounded-xl
+           hover:bg-surface-700 hover:border-surface-500
+           active:bg-surface-800
+           transition-all duration-200 ease-out
+           focus:outline-none focus:ring-2 focus:ring-surface-500/50 focus:ring-offset-2 focus:ring-offset-surface-900;
+  }
+
+  /* Form input */
+  .input-field {
+    @apply w-full px-4 py-3 bg-surface-900/50 border border-surface-700 
+           rounded-xl text-surface-100 placeholder-surface-500
+           focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500
+           transition-all duration-200;
+  }
+
+  /* Form label */
+  .input-label {
+    @apply block text-sm font-medium text-surface-300 mb-1.5;
+  }
+
+  /* Floating orb decorations */
+  .orb {
+    @apply absolute rounded-full blur-3xl opacity-20 pointer-events-none;
+  }
+
+  /* Skeleton loading animation */
+  .skeleton {
+    @apply bg-surface-700/50 rounded-lg animate-pulse;
+  }
+
+  /* Subtle grid background pattern */
+  .bg-grid {
+    background-image: 
+      linear-gradient(rgba(99, 102, 241, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99, 102, 241, 0.03) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+}
+
+/* ============================================
+   Utility Layer - One-off helpers
+   ============================================ */
+@layer utilities {
+  /* Animated gradient border */
+  .border-gradient {
+    border: 1px solid transparent;
+    background-clip: padding-box;
+    position: relative;
+  }
+
+  .border-gradient::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6, #06b6d4);
+    z-index: -1;
+    opacity: 0.5;
+  }
+
+  /* Staggered animation delays for lists */
+  .stagger-1 { animation-delay: 0.1s; }
+  .stagger-2 { animation-delay: 0.2s; }
+  .stagger-3 { animation-delay: 0.3s; }
+  .stagger-4 { animation-delay: 0.4s; }
+  .stagger-5 { animation-delay: 0.5s; }
+}
