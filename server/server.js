@@ -116,29 +116,21 @@ app.use((err, req, res, next) => {
   });
 });
 
-// ============================================
-// Start the Server
-// ============================================
-const startServer = async () => {
-  try {
-    // Connect to MongoDB
-    await connectDB();
+// Connect to MongoDB
+connectDB();
 
-    // Start listening for requests
-    app.listen(PORT, () => {
-      console.log('');
-      console.log('🚀 ==========================================');
-      console.log(`🚀  AI Blog Generator Server`);
-      console.log(`🚀  Running on: http://localhost:${PORT}`);
-      console.log(`🚀  Health:     http://localhost:${PORT}/api/health`);
-      console.log(`🚀  Mode:       ${process.env.NODE_ENV || 'development'}`);
-      console.log('🚀 ==========================================');
-      console.log('');
-    });
-  } catch (error) {
-    console.error('❌ Failed to start server:', error.message);
-    process.exit(1);
-  }
-};
+// If running in traditional Node (not Vercel Serverless)
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log('');
+    console.log('🚀 ==========================================');
+    console.log(`🚀  AI Blog Generator Server`);
+    console.log(`🚀  Running on: http://localhost:${PORT}`);
+    console.log(`🚀  Health:     http://localhost:${PORT}/api/health`);
+    console.log(`🚀  Mode:       ${process.env.NODE_ENV || 'development'}`);
+    console.log('🚀 ==========================================');
+    console.log('');
+  });
+}
 
-startServer();
+export default app;
