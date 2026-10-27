@@ -66,7 +66,11 @@ const blogArticleSchema = new mongoose.Schema(
     seo: {
       metaTitle: { type: String, trim: true },
       metaDescription: { type: String, trim: true },
-      keywords: [{ type: String, trim: true }],
+      primaryKeyword: { type: String, trim: true },
+      secondaryKeywords: [{ type: String, trim: true }],
+      primaryKeywordCount: { type: Number, default: 0 },
+      readingTimeMinutes: { type: Number, default: 1 },
+      wordCount: { type: Number, default: 0 },
     },
     // Pipeline diagnostics
     generationDetails: {

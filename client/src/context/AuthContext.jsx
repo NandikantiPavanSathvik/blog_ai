@@ -16,35 +16,40 @@ import api from '../services/api';
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Read token and user synchronously from localStorage on startup (instant!)
+  const [token, setToken] = useState(() => localStorage.getItem('blogai_token'));
+  const [user, setUser] = useState(() => {
+    try {
+      const stored = localStorage.getItem('blogai_user');
+      return stored ? JSON.parse(stored) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [loading, setLoading] = useState(false);
 
-  // Check localStorage on initial page load
+  // Validate session with backend quietly in background
   useEffect(() => {
-    const checkAuth = async () => {
+    const verifySession = async () => {
       const storedToken = localStorage.getItem('blogai_token');
-      const storedUser = localStorage.getItem('blogai_user');
+      if (!storedToken) return;
 
-      if (storedToken && storedUser) {
-        setToken(storedToken);
-        setUser(JSON.parse(storedUser));
-        try {
-          // Verify with backend that token is still valid
-          const res = await api.get('/auth/me');
-          if (res.data.success) {
-            setUser(res.data.user);
-            localStorage.setItem('blogai_user', JSON.stringify(res.data.user));
-          }
-        } catch (error) {
-          console.warn('Session expired or invalid, logging out');
+      try {
+        const res = await api.get('/auth/me');
+        if (res.data.success && res.data.user) {
+          setUser(res.data.user);
+          localStorage.setItem('blogai_user', JSON.stringify(res.data.user));
+        }
+      } catch (error) {
+        // Only log out if backend explicitly rejects the token as invalid or expired (401)
+        if (error.response?.status === 401) {
+          console.warn('Session expired. Logging out.');
           logout();
         }
       }
-      setLoading(false);
     };
 
-    checkAuth();
+    verifySession();
   }, []);
 
   // Register function

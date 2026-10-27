@@ -14,6 +14,8 @@ import {
   HiOutlineExclamationCircle,
   HiOutlineClock,
   HiOutlineCheckCircle,
+  HiOutlineMagnifyingGlass,
+  HiOutlineTag,
 } from 'react-icons/hi2';
 
 const CATEGORIES = [
@@ -44,6 +46,8 @@ const PIPELINE_STEPS = [
 const GeneratePage = () => {
   const [profile, setProfile] = useState(null);
   const [topic, setTopic] = useState('');
+  const [primaryKeyword, setPrimaryKeyword] = useState('');
+  const [secondaryKeywords, setSecondaryKeywords] = useState('');
   const [category, setCategory] = useState('Industry Insights');
   const [tone, setTone] = useState('Conversational & Friendly');
   const [provider, setProvider] = useState('groq');
@@ -53,6 +57,8 @@ const GeneratePage = () => {
   const [article, setArticle] = useState(null);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [copiedMetaTitle, setCopiedMetaTitle] = useState(false);
+  const [copiedMetaDesc, setCopiedMetaDesc] = useState(false);
 
   // Fetch business profile on mount
   useEffect(() => {
@@ -100,6 +106,8 @@ const GeneratePage = () => {
         topic,
         category,
         tone,
+        primaryKeyword,
+        secondaryKeywords,
         provider,
       });
 
@@ -187,6 +195,45 @@ const GeneratePage = () => {
                     placeholder="e.g. 10 Essential Cybersecurity Habits Every Remote Medical Clinic Must Adopt"
                     className="input-field text-sm"
                   />
+                </div>
+
+                {/* SEO Target Keywords (For Content Creators & Marketers) */}
+                <div className="p-4 rounded-xl border border-primary-500/30 bg-primary-500/5 space-y-3">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-primary-300">
+                    <HiOutlineMagnifyingGlass className="w-4 h-4 text-primary-400" />
+                    <span>SEO Optimization Targets</span>
+                  </div>
+
+                  <div>
+                    <label className="input-label !text-xs" htmlFor="primaryKeyword">
+                      Primary Target Keyword
+                    </label>
+                    <input
+                      id="primaryKeyword"
+                      type="text"
+                      value={primaryKeyword}
+                      onChange={(e) => setPrimaryKeyword(e.target.value)}
+                      placeholder="e.g. medical cybersecurity habits"
+                      className="input-field text-xs !py-2"
+                    />
+                    <p className="text-[11px] text-surface-400 mt-1">
+                      Woven strategically into H1 title, opening intro, and key subheadings.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="input-label !text-xs" htmlFor="secondaryKeywords">
+                      Secondary Keywords (Optional, comma-separated)
+                    </label>
+                    <input
+                      id="secondaryKeywords"
+                      type="text"
+                      value={secondaryKeywords}
+                      onChange={(e) => setSecondaryKeywords(e.target.value)}
+                      placeholder="e.g. HIPAA compliance, clinic data security, ransomware prevention"
+                      className="input-field text-xs !py-2"
+                    />
+                  </div>
                 </div>
 
                 <div>
@@ -326,6 +373,91 @@ const GeneratePage = () => {
                     )}
                   </button>
                 </div>
+
+                {/* SEO Meta Pack Card */}
+                {article.seo && (
+                  <div className="p-5 rounded-2xl bg-surface-900/90 border border-primary-500/30 shadow-lg space-y-4">
+                    <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-surface-800">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-lg bg-primary-500/20 text-primary-400 flex items-center justify-center">
+                          <HiOutlineMagnifyingGlass className="w-3.5 h-3.5" />
+                        </div>
+                        <span className="text-xs font-bold text-white uppercase tracking-wider">
+                          SEO Meta Pack
+                        </span>
+                      </div>
+
+                      {/* Stat Badges */}
+                      <div className="flex flex-wrap items-center gap-2 text-[11px]">
+                        {article.seo.primaryKeyword && (
+                          <span className="px-2.5 py-0.5 rounded-full font-medium bg-primary-500/10 text-primary-300 border border-primary-500/30 flex items-center gap-1">
+                            <HiOutlineTag className="w-3 h-3" />
+                            <span>Target: {article.seo.primaryKeyword} ({article.seo.primaryKeywordCount || 0}x)</span>
+                          </span>
+                        )}
+                        <span className="px-2.5 py-0.5 rounded-full font-medium bg-surface-800 text-surface-300 border border-surface-700">
+                          {article.seo.wordCount || 0} words · ~{article.seo.readingTimeMinutes || 1} min read
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Meta Title */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-surface-400 font-medium">Meta Title</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(article.seo.metaTitle || '');
+                            setCopiedMetaTitle(true);
+                            setTimeout(() => setCopiedMetaTitle(false), 2000);
+                          }}
+                          className="text-primary-400 hover:text-primary-300 text-[11px] font-medium flex items-center gap-1 transition-colors"
+                        >
+                          {copiedMetaTitle ? <HiOutlineCheck className="w-3 h-3 text-accent-emerald" /> : <HiOutlineClipboardDocument className="w-3 h-3" />}
+                          <span>{copiedMetaTitle ? 'Copied' : 'Copy Title'}</span>
+                        </button>
+                      </div>
+                      <p className="text-xs text-white bg-surface-950/70 p-2.5 rounded-lg border border-surface-800 font-mono">
+                        {article.seo.metaTitle}
+                      </p>
+                    </div>
+
+                    {/* Meta Description */}
+                    <div className="space-y-1">
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-surface-400 font-medium">Meta Description</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(article.seo.metaDescription || '');
+                            setCopiedMetaDesc(true);
+                            setTimeout(() => setCopiedMetaDesc(false), 2000);
+                          }}
+                          className="text-primary-400 hover:text-primary-300 text-[11px] font-medium flex items-center gap-1 transition-colors"
+                        >
+                          {copiedMetaDesc ? <HiOutlineCheck className="w-3 h-3 text-accent-emerald" /> : <HiOutlineClipboardDocument className="w-3 h-3" />}
+                          <span>{copiedMetaDesc ? 'Copied' : 'Copy Description'}</span>
+                        </button>
+                      </div>
+                      <p className="text-xs text-surface-200 bg-surface-950/70 p-2.5 rounded-lg border border-surface-800 leading-relaxed">
+                        {article.seo.metaDescription}
+                      </p>
+                    </div>
+
+                    {/* Secondary Keywords pills */}
+                    {article.seo.secondaryKeywords && article.seo.secondaryKeywords.length > 0 && (
+                      <div className="pt-1 flex flex-wrap items-center gap-1.5">
+                        <span className="text-[11px] text-surface-400">Secondary Keywords:</span>
+                        {article.seo.secondaryKeywords.map((kw, i) => (
+                          <span key={i} className="px-2 py-0.5 rounded text-[10px] bg-surface-800 text-surface-300 border border-surface-700">
+                            {kw}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {/* Article Render */}
                 <div className="prose prose-invert max-w-none text-surface-200 text-sm leading-relaxed space-y-4">

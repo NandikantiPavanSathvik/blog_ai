@@ -81,7 +81,8 @@ const ArticlesPage = () => {
     (art) =>
       art.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       art.topic?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      art.category?.toLowerCase().includes(searchTerm.toLowerCase())
+      art.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      art.seo?.primaryKeyword?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
@@ -170,9 +171,17 @@ const ArticlesPage = () => {
                     {article.title}
                   </h3>
 
-                  <p className="text-surface-400 text-xs line-clamp-2 mb-4">
+                  <p className="text-surface-400 text-xs line-clamp-2 mb-3">
                     Topic: {article.topic}
                   </p>
+
+                  {article.seo?.primaryKeyword && (
+                    <div className="mb-4">
+                      <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded bg-primary-500/10 text-primary-300 border border-primary-500/20">
+                        SEO: {article.seo.primaryKeyword}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="pt-4 border-t border-surface-800 flex items-center justify-between">

@@ -14,7 +14,15 @@ import blogAgent from '../services/ai/agent/blogAgent.js';
 // @access  Private
 export const generateArticle = async (req, res) => {
   try {
-    const { topic, category, tone, language, provider = 'gemini' } = req.body;
+    const {
+      topic,
+      category,
+      tone,
+      language,
+      primaryKeyword,
+      secondaryKeywords,
+      provider = 'groq',
+    } = req.body;
 
     if (!topic) {
       return res.status(400).json({
@@ -44,13 +52,15 @@ export const generateArticle = async (req, res) => {
       });
     }
 
-    // 3. Run Custom AI Agent Pipeline
+    // 3. Run Custom AI Agent Pipeline with SEO targets
     const agentResult = await blogAgent.generateArticle({
       profile,
       topic,
       category: category || 'Industry Insights',
       tone: tone || profile?.brandVoice || 'Conversational & Friendly',
       language: language || profile?.preferredLanguage || 'English',
+      primaryKeyword,
+      secondaryKeywords,
       preferredProvider: provider,
     });
 

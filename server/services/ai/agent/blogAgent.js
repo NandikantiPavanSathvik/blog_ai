@@ -50,16 +50,33 @@ class BlogAgent {
   }
 
   // Main generation pipeline
-  async generateArticle({ profile, topic, category, tone, language, preferredProvider = 'gemini' }) {
+  async generateArticle({
+    profile,
+    topic,
+    category,
+    tone,
+    language,
+    primaryKeyword = '',
+    secondaryKeywords = '',
+    preferredProvider = 'groq',
+  }) {
     const startTime = Date.now();
     let provider = this.getProvider(preferredProvider);
     let expansionAttempts = 0;
 
-    // 1. Construct Token-Optimized Prompt
-    const systemInstruction = `You are an elite, professional SaaS blog copywriter. 
-Your goal is to write a comprehensive, authoritative, deeply engaging blog article formatted in clean Markdown.
+    // 1. Construct Token-Optimized Prompt with SEO Directives
+    const systemInstruction = `You are an elite, senior SEO copywriter and SaaS content strategist.
+Your mission is to produce an authoritative, high-ranking blog article optimized for Google search and formatted in clean, professional Markdown.
 CRITICAL REQUIREMENT: The article MUST be comprehensive, in-depth, and reach an extensive length between 5,000 and 6,000 total characters.
-Include a compelling H1 title, a captivating introduction, 5-7 informative H2 sections with concrete insights/bullet points, and a motivating conclusion with Call to Action.`;
+Include a captivating H1 title, a structured introduction, 5-7 informative H2 sections, actionable checklists/bullet points, and a motivating conclusion with Call to Action.`;
+
+    const seoDirectives = primaryKeyword
+      ? `
+[SEO OPTIMIZATION TARGETS]
+- Primary Keyword: "${primaryKeyword}" (integrate naturally into H1 title, opening 100 words, and at least two H2 headings).
+- Secondary Keywords: "${secondaryKeywords || 'N/A'}" (weave seamlessly across body paragraphs).
+- Keyword Density: Maintain a natural, reader-first 1-1.5% density without keyword-stuffing.`
+      : '';
 
     const userPrompt = `
 [BUSINESS PROFILE]
@@ -76,9 +93,10 @@ Topic: "${topic}"
 Category: ${category}
 Desired Tone: ${tone}
 Target Length: 5,000 - 6,000 characters.
+${seoDirectives}
 
 Structure instructions:
-- Start directly with # [Compelling Article Title]
+- Start directly with # [Compelling Article Title containing Primary Keyword if provided]
 - Provide an engaging opening hook.
 - Divide the body into 5 to 7 detailed, substantive sections using ## headings.
 - Offer actionable advice, practical examples, and clear takeaways.
@@ -139,6 +157,18 @@ ${markdown}`;
     // Clean up redundant first H1 from markdown if present so it renders cleanly
     const contentMarkdown = markdown;
 
+    // Calculate reading time (~200 words per minute)
+    const wordCount = markdown.split(/\s+/).filter(Boolean).length;
+    const readingTimeMinutes = Math.max(1, Math.round(wordCount / 200));
+
+    // Keyword density check
+    let primaryKeywordCount = 0;
+    if (primaryKeyword) {
+      const regex = new RegExp(primaryKeyword.trim(), 'gi');
+      primaryKeywordCount = (markdown.match(regex) || []).length;
+    }
+
+    // Calculate elapsed duration
     const durationMs = Date.now() - startTime;
 
     return {
@@ -153,9 +183,15 @@ ${markdown}`;
         generationDurationMs: durationMs,
       },
       seo: {
-        metaTitle: `${title} | ${profile?.businessName || 'Blog'}`,
-        metaDescription: `Read our guide on "${topic}". In-depth insights on ${category.toLowerCase()} for ${profile?.targetAudience || 'readers'}.`,
-        keywords: [topic, category, profile?.industry || 'Business'].filter(Boolean),
+        metaTitle: `${title.slice(0, 55)} | ${profile?.businessName || 'Blog'}`,
+        metaDescription: `Comprehensive guide to ${primaryKeyword || topic}. Actionable insights, strategies, and key takeaways for ${profile?.targetAudience || 'professionals'}.`,
+        primaryKeyword: primaryKeyword || topic,
+        secondaryKeywords: secondaryKeywords
+          ? secondaryKeywords.split(',').map((k) => k.trim()).filter(Boolean)
+          : [],
+        primaryKeywordCount,
+        readingTimeMinutes,
+        wordCount,
       },
     };
   }

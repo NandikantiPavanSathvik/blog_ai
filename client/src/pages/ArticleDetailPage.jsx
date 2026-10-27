@@ -15,6 +15,8 @@ import {
   HiOutlineTrash,
   HiOutlineCalendar,
   HiOutlineCheckCircle,
+  HiOutlineMagnifyingGlass,
+  HiOutlineTag,
 } from 'react-icons/hi2';
 
 const ArticleDetailPage = () => {
@@ -25,6 +27,8 @@ const ArticleDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [copiedMetaTitle, setCopiedMetaTitle] = useState(false);
+  const [copiedMetaDesc, setCopiedMetaDesc] = useState(false);
 
   useEffect(() => {
     const fetchArticle = async () => {
@@ -200,6 +204,91 @@ const ArticleDetailPage = () => {
             </div>
           </div>
         </div>
+
+        {/* SEO Meta Pack Card */}
+        {article.seo && (
+          <div className="glass-card p-6 border-primary-500/30 mb-8 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-surface-800">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-lg bg-primary-500/20 text-primary-400 flex items-center justify-center">
+                  <HiOutlineMagnifyingGlass className="w-3.5 h-3.5" />
+                </div>
+                <span className="text-xs font-bold text-white uppercase tracking-wider">
+                  SEO Meta Pack
+                </span>
+              </div>
+
+              {/* Stat Badges */}
+              <div className="flex flex-wrap items-center gap-2 text-xs">
+                {article.seo.primaryKeyword && (
+                  <span className="px-2.5 py-0.5 rounded-full font-medium bg-primary-500/10 text-primary-300 border border-primary-500/30 flex items-center gap-1">
+                    <HiOutlineTag className="w-3 h-3" />
+                    <span>Target: {article.seo.primaryKeyword} ({article.seo.primaryKeywordCount || 0}x)</span>
+                  </span>
+                )}
+                <span className="px-2.5 py-0.5 rounded-full font-medium bg-surface-800 text-surface-300 border border-surface-700">
+                  {article.seo.wordCount || 0} words · ~{article.seo.readingTimeMinutes || 1} min read
+                </span>
+              </div>
+            </div>
+
+            {/* Meta Title */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-surface-400 font-medium">Meta Title</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(article.seo.metaTitle || '');
+                    setCopiedMetaTitle(true);
+                    setTimeout(() => setCopiedMetaTitle(false), 2000);
+                  }}
+                  className="text-primary-400 hover:text-primary-300 text-xs font-medium flex items-center gap-1 transition-colors"
+                >
+                  {copiedMetaTitle ? <HiOutlineCheck className="w-3 h-3 text-accent-emerald" /> : <HiOutlineClipboardDocument className="w-3 h-3" />}
+                  <span>{copiedMetaTitle ? 'Copied' : 'Copy Title'}</span>
+                </button>
+              </div>
+              <p className="text-xs text-white bg-surface-950/70 p-2.5 rounded-lg border border-surface-800 font-mono">
+                {article.seo.metaTitle}
+              </p>
+            </div>
+
+            {/* Meta Description */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-surface-400 font-medium">Meta Description</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(article.seo.metaDescription || '');
+                    setCopiedMetaDesc(true);
+                    setTimeout(() => setCopiedMetaDesc(false), 2000);
+                  }}
+                  className="text-primary-400 hover:text-primary-300 text-xs font-medium flex items-center gap-1 transition-colors"
+                >
+                  {copiedMetaDesc ? <HiOutlineCheck className="w-3 h-3 text-accent-emerald" /> : <HiOutlineClipboardDocument className="w-3 h-3" />}
+                  <span>{copiedMetaDesc ? 'Copied' : 'Copy Description'}</span>
+                </button>
+              </div>
+              <p className="text-xs text-surface-200 bg-surface-950/70 p-2.5 rounded-lg border border-surface-800 leading-relaxed">
+                {article.seo.metaDescription}
+              </p>
+            </div>
+
+            {/* Secondary Keywords tags */}
+            {article.seo.secondaryKeywords && article.seo.secondaryKeywords.length > 0 && (
+              <div className="pt-1 flex flex-wrap items-center gap-1.5">
+                <span className="text-xs text-surface-400">Secondary Keywords:</span>
+                {article.seo.secondaryKeywords.map((kw, i) => (
+                  <span key={i} className="px-2 py-0.5 rounded text-xs bg-surface-800 text-surface-300 border border-surface-700">
+                    {kw}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Formatted Article Body */}
         <article className="glass-card p-8 sm:p-12 border-surface-700/60">
