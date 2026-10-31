@@ -11,6 +11,7 @@ import {
   HiOutlineArrowRight,
   HiOutlineCheckCircle,
   HiOutlineExclamationTriangle,
+  HiOutlineLightBulb,
 } from 'react-icons/hi2';
 
 const DashboardPage = () => {
@@ -101,7 +102,7 @@ const DashboardPage = () => {
         )}
 
         {/* Action Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {/* Card 1: Business Profile */}
           <div className="glass-card p-6 border-surface-700/60 flex flex-col justify-between">
             <div>
@@ -137,7 +138,29 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Card 2: Generate Blog (Active) */}
+          {/* Card 2: AI Idea Generator */}
+          <div className="glass-card p-6 border-accent-amber/40 bg-accent-amber/5 flex flex-col justify-between">
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-accent-amber/10 border border-accent-amber/20 flex items-center justify-center mb-4">
+                <HiOutlineLightBulb className="w-6 h-6 text-accent-amber" />
+              </div>
+              <h3 className="text-lg font-semibold text-white mb-1">Idea Generator</h3>
+              <p className="text-surface-400 text-sm">
+                Discover trending blog topics with real Google Trends SEO keywords tailored to your brand.
+              </p>
+            </div>
+            <div className="mt-6 pt-4 border-t border-surface-800">
+              <Link
+                to="/ideas"
+                className="btn-secondary !py-2.5 !px-4 text-xs flex items-center justify-center gap-1.5 w-full hover:border-accent-amber/50"
+              >
+                <HiOutlineLightBulb className="w-3.5 h-3.5 text-accent-amber" />
+                <span>Generate Ideas</span>
+              </Link>
+            </div>
+          </div>
+
+          {/* Card 3: Generate Blog (Active) */}
           <div className="glass-card p-6 border-accent-violet/40 bg-accent-violet/5 flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-accent-violet/10 border border-accent-violet/20 flex items-center justify-center mb-4">
@@ -159,7 +182,7 @@ const DashboardPage = () => {
             </div>
           </div>
 
-          {/* Card 3: Articles Library (Active) */}
+          {/* Card 4: Articles Library (Active) */}
           <div className="glass-card p-6 border-accent-emerald/40 bg-accent-emerald/5 flex flex-col justify-between">
             <div>
               <div className="w-12 h-12 rounded-xl bg-accent-emerald/10 border border-accent-emerald/20 flex items-center justify-center mb-4">

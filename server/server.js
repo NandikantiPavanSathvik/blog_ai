@@ -93,6 +93,12 @@ import articleRoutes from './routes/article.routes.js';
 app.use('/api/articles', articleRoutes);
 
 // ============================================
+// Phase 6 Routes: Idea Generator
+// ============================================
+import ideaRoutes from './routes/idea.routes.js';
+app.use('/api/ideas', ideaRoutes);
+
+// ============================================
 // Error Handling
 // ============================================
 

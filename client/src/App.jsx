@@ -21,6 +21,7 @@ import ProfilePage from './pages/ProfilePage.jsx';
 import GeneratePage from './pages/GeneratePage.jsx';
 import ArticlesPage from './pages/ArticlesPage.jsx';
 import ArticleDetailPage from './pages/ArticleDetailPage.jsx';
+import IdeaGeneratorPage from './pages/IdeaGeneratorPage.jsx';
 
 function App() {
   return (
@@ -62,6 +63,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ArticlesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/ideas"
+            element={
+              <ProtectedRoute>
+                <IdeaGeneratorPage />
               </ProtectedRoute>
             }
           />

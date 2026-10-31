@@ -3,7 +3,7 @@
 // ============================================
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import api from '../services/api';
 import {
@@ -44,11 +44,12 @@ const PIPELINE_STEPS = [
 ];
 
 const GeneratePage = () => {
+  const [searchParams] = useSearchParams();
   const [profile, setProfile] = useState(null);
-  const [topic, setTopic] = useState('');
-  const [primaryKeyword, setPrimaryKeyword] = useState('');
-  const [secondaryKeywords, setSecondaryKeywords] = useState('');
-  const [category, setCategory] = useState('Industry Insights');
+  const [topic, setTopic] = useState(searchParams.get('topic') || '');
+  const [primaryKeyword, setPrimaryKeyword] = useState(searchParams.get('primaryKeyword') || '');
+  const [secondaryKeywords, setSecondaryKeywords] = useState(searchParams.get('secondaryKeywords') || '');
+  const [category, setCategory] = useState(searchParams.get('category') || 'Industry Insights');
   const [tone, setTone] = useState('Conversational & Friendly');
   const [provider, setProvider] = useState('groq');
 
